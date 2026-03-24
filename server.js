@@ -12,7 +12,7 @@ app.get("/champs", (req, res) => {
 app.get("/champs/:id", (req, res) => {
   const id = req.params.id;
   if (!id) {
-    return res.status(404).json({ message: "Champs nem található" });
+    return res.status(400).json({ message: "Invalid credentials" });
   }
   const champ = db.prepare(`SELECT * FROM lolchamps WHERE id=?`).get(id);
   if (!champ) {
