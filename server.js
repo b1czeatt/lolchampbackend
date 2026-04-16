@@ -75,6 +75,45 @@ app.delete("/champs/:id", (req, res) => {
   return res.status(200).json({ message: "Sikeresen törölve" });
 });
 
+app.put("/champs/:id", (req, res) => {
+  const id = req.params.id;
+  const {
+    name,
+    role,
+    lane,
+    difficulty,
+    blue_essence,
+    damage_type,
+    description,
+  } = req.body;
+  if (
+    !name ||
+    !role ||
+    !lane ||
+    !difficulty ||
+    !blue_essence ||
+    !damage_type ||
+    !description
+  ) {
+    return res.status(400).json({ message: "Invalid credentials" });
+  }
+  const champ = db.prepare(`SELECT * FROM lolchamps WHERE id=?`).get(id);
+  if (!champ) {
+    return res.status(404).json({ message: "Nem található" });
+  }
+  db.prepare(`UPDATE lolchamps SET name=?, role=?, lane=?, difficulty=?, blue_essence=?, damage_type=?, description=? WHERE id=?`).run(
+    name,
+    role,
+    lane,
+    difficulty,
+    blue_essence,
+    damage_type,
+    description,
+    id
+  );
+  return res.status(200).json({ message: "Sikeresen frissítve" });
+});
+
 app.listen(PORT, () => {
   console.log(`A szerver fut ezen a porton ${PORT}`);
 });
